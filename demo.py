@@ -1,12 +1,22 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib as mpl
+
+# -------------------- Global Configuration for Sharp Charts -------------------- #
+mpl.rcParams.update({
+    'figure.dpi': 150,         # Higher DPI for sharper figures
+    'font.size': 12,
+    'axes.labelsize': 14,
+    'axes.titlesize': 16,
+    'font.family': 'sans-serif'
+})
 
 # -------------------- Global Style -------------------- #
 try:
     plt.style.use("seaborn-whitegrid")  # Use a clean Seaborn style for all charts
 except OSError:
-    print("Style 'seaborn-whitegrid' not found. Falling back to default style.")
+    st.error("Style 'seaborn-whitegrid' not found. Using default style.")
     plt.style.use("default")
 
 # -------------------- Page Configuration -------------------- #
@@ -56,7 +66,7 @@ with st.container():
         
         df_savings = pd.DataFrame(list(round_up_savings.items()), columns=["Account", "Round-Up Savings ($)"])
         
-        fig1, ax1 = plt.subplots(figsize=(8, 5), dpi=100)
+        fig1, ax1 = plt.subplots(figsize=(10, 6), dpi=150)
         colors = ["#1E3A8A", "#4A90E2", "#72BF44", "#00C48C"]
         
         bars = ax1.bar(df_savings["Account"], df_savings["Round-Up Savings ($)"],
@@ -68,11 +78,12 @@ with st.container():
         ax1.tick_params(axis='x', labelrotation=20, labelsize=12)
         ax1.tick_params(axis='y', labelsize=12)
         
+        # Remove top and right spines for a cleaner look.
         ax1.spines["top"].set_visible(False)
         ax1.spines["right"].set_visible(False)
         ax1.yaxis.grid(True, linestyle="--", alpha=0.6)
         
-        # Annotate each bar with its value using a white background for better contrast, smaller font size.
+        # Annotate each bar with its value using a smaller font.
         for bar in bars:
             height = bar.get_height()
             ax1.text(
@@ -81,7 +92,7 @@ with st.container():
                 f"${height:.2f}",
                 ha="center",
                 va="bottom",
-                fontsize=10,  # Smaller font size
+                fontsize=10,
                 fontweight="bold",
                 bbox=dict(facecolor='white', edgecolor='none', pad=2)
             )
@@ -100,7 +111,7 @@ with st.container():
         compounding_periods_per_year = 12
         years = 3
 
-        # Calculate future values with monthly compounding and contributions
+        # Calculate future values with monthly compounding and contributions.
         future_values = []
         balance = initial_balance
         for month in range(1, years * 12 + 1):
@@ -114,7 +125,7 @@ with st.container():
             "Projected Balance ($)": future_values
         })
 
-        fig2, ax2 = plt.subplots(figsize=(8, 5), dpi=100)
+        fig2, ax2 = plt.subplots(figsize=(10, 6), dpi=150)
         bar_color = "#4A90E2"
         bars = ax2.bar(df_growth["Year"], df_growth["Projected Balance ($)"],
                        color=bar_color, edgecolor="black", linewidth=0.8)
@@ -130,7 +141,7 @@ with st.container():
         ax2.spines["right"].set_visible(False)
         ax2.yaxis.grid(True, linestyle="--", alpha=0.6)
         
-        # Annotate each bar with its projected value using a white background and smaller font.
+        # Annotate each bar with its projected value using a smaller font.
         for bar in bars:
             height = bar.get_height()
             ax2.text(
@@ -139,7 +150,7 @@ with st.container():
                 f"${height:,.2f}",
                 ha="center",
                 va="bottom",
-                fontsize=10,  # Smaller font size
+                fontsize=10,
                 fontweight="bold",
                 bbox=dict(facecolor='white', edgecolor='none', pad=2)
             )
@@ -147,7 +158,7 @@ with st.container():
         plt.tight_layout()
         st.pyplot(fig2, use_container_width=True)
         
-        # Add a note below the chart describing the growth assumptions.
+        # Add a caption explaining the growth assumptions.
         st.caption("Note: The projected savings are calculated assuming monthly contributions, compounded monthly at an annual interest rate of 3.80% over 3 years.")
 
 # -------------------- AI-Driven Savings Insights -------------------- #
