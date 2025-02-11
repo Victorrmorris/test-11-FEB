@@ -35,7 +35,7 @@ round_up_savings = {account: round(amount * multiplier, 2) for account, amount i
 total_round_up_savings = sum(round_up_savings.values())
 
 # -------------------- Main Title and Checking Accounts -------------------- #
-st.title("🏦 Linked Checking Accounts & Savings")
+st.title("🏦 Linked Checking Accounts")
 with st.container():
     st.subheader("💰 Checking Account Balances")
     # Display each checking account as a metric card for a modern look.
@@ -169,7 +169,7 @@ with st.container():
 
 # -------------------- LLM Chatbot Prompt -------------------- #
 with st.container():
-    st.subheader("💬 Chat with our LLM")
+    st.subheader("💬 Chat with our AI")
     chat_prompt = st.text_input("Enter your question or prompt below:")
     if st.button("Submit", key="chat_submit"):
         # Placeholder response – integrate your LLM API here as needed.
