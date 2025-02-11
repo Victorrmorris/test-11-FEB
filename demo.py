@@ -1,6 +1,10 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mtick
+
+# -------------------- Global Style -------------------- #
+plt.style.use('seaborn-whitegrid')  # Use a clean Seaborn style for all charts
 
 # -------------------- Page Configuration -------------------- #
 st.set_page_config(page_title="DECC Automated Savings", layout="wide", initial_sidebar_state="expanded")
@@ -52,30 +56,41 @@ with st.container():
         
         # Prepare DataFrame for plotting
         df_savings = pd.DataFrame(list(round_up_savings.items()), columns=["Account", "Round-Up Savings ($)"])
-        fig1, ax1 = plt.subplots(figsize=(7, 4))
+        
+        # Create figure and axis with improved resolution
+        fig1, ax1 = plt.subplots(figsize=(8, 5), dpi=100)
         colors = ["#1E3A8A", "#4A90E2", "#72BF44", "#00C48C"]
+        
         bars = ax1.bar(df_savings["Account"], df_savings["Round-Up Savings ($)"],
-                       color=colors, edgecolor="black")
-        ax1.set_title("Round-Up Savings by Checking Account", fontsize=14, fontweight="bold")
-        ax1.set_xlabel("Accounts", fontsize=12)
-        ax1.set_ylabel("Savings ($)", fontsize=12)
-        plt.xticks(rotation=20)
-        ax1.grid(axis="y", linestyle="--", alpha=0.5)
+                       color=colors, edgecolor="black", linewidth=0.8)
+        
+        # Set titles and labels with adjusted font sizes
+        ax1.set_title("Round-Up Savings by Checking Account", fontsize=16, fontweight="bold")
+        ax1.set_xlabel("Accounts", fontsize=14)
+        ax1.set_ylabel("Savings ($)", fontsize=14)
+        ax1.tick_params(axis='x', labelrotation=20, labelsize=12)
+        ax1.tick_params(axis='y', labelsize=12)
+        
+        # Remove the top and right spines for a cleaner look
+        ax1.spines["top"].set_visible(False)
+        ax1.spines["right"].set_visible(False)
+        
+        # Add gridlines only for the y-axis
+        ax1.yaxis.grid(True, linestyle="--", alpha=0.6)
+        
         # Annotate each bar with its value
         for bar in bars:
             height = bar.get_height()
-            ax1.text(bar.get_x() + bar.get_width()/2, height + 2,
-                     f"${height:.2f}", ha="center", fontsize=12, fontweight="bold")
-        st.pyplot(fig1)
+            ax1.text(bar.get_x() + bar.get_width()/2, height + (0.02 * total_round_up_savings),
+                     f"${height:.2f}", ha="center", va="bottom", fontsize=12, fontweight="bold")
+        
+        plt.tight_layout()
+        st.pyplot(fig1, use_container_width=True)
 
     # --- Right Column: Projected Savings Growth Chart ---
     with col2:
         st.markdown("#### 📈 Projected Savings Growth")
         # Parameters for the compound interest simulation:
-        #   - initial_balance: starting at $0
-        #   - monthly_contribution: total_round_up_savings from the chosen method
-        #   - annual_interest_rate: 3.80% (HYSA rate)
-        #   - compounding is monthly over a 3-year period
         initial_balance = 0
         monthly_contribution = total_round_up_savings
         annual_interest_rate = 0.038
@@ -96,21 +111,34 @@ with st.container():
             "Projected Balance ($)": future_values
         })
 
-        fig2, ax2 = plt.subplots(figsize=(7, 4))
+        # Create figure and axis with improved resolution
+        fig2, ax2 = plt.subplots(figsize=(8, 5), dpi=100)
+        bar_color = "#4A90E2"
         bars = ax2.bar(df_growth["Year"], df_growth["Projected Balance ($)"],
-                       color="#4A90E2", edgecolor="black")
-        ax2.set_title("Projected Savings Growth Over Time", fontsize=14, fontweight="bold")
-        ax2.set_xlabel("Years", fontsize=12)
-        ax2.set_ylabel("Total Savings ($)", fontsize=12)
+                       color=bar_color, edgecolor="black", linewidth=0.8)
+        
+        ax2.set_title("Projected Savings Growth Over Time", fontsize=16, fontweight="bold")
+        ax2.set_xlabel("Years", fontsize=14)
+        ax2.set_ylabel("Total Savings ($)", fontsize=14)
         ax2.set_xticks(list(range(1, years + 1)))
-        ax2.grid(axis="y", linestyle="--", alpha=0.5)
+        ax2.tick_params(axis='x', labelsize=12)
+        ax2.tick_params(axis='y', labelsize=12)
+        
+        # Remove top and right spines for a modern look
+        ax2.spines["top"].set_visible(False)
+        ax2.spines["right"].set_visible(False)
+        
+        # Add gridlines for y-axis
+        ax2.yaxis.grid(True, linestyle="--", alpha=0.6)
+        
         # Annotate each bar with its projected value
         for bar in bars:
             height = bar.get_height()
-            ax2.text(bar.get_x() + bar.get_width()/2, height + 500,
-                     f"${height:,.2f}", ha="center", fontsize=12, fontweight="bold")
+            ax2.text(bar.get_x() + bar.get_width()/2, height + (0.02 * height),
+                     f"${height:,.2f}", ha="center", va="bottom", fontsize=12, fontweight="bold")
+        
         plt.tight_layout()
-        st.pyplot(fig2)
+        st.pyplot(fig2, use_container_width=True)
 
 # -------------------- AI-Driven Savings Insights -------------------- #
 with st.container():
