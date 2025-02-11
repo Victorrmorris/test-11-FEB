@@ -72,10 +72,19 @@ with st.container():
         ax1.spines["right"].set_visible(False)
         ax1.yaxis.grid(True, linestyle="--", alpha=0.6)
         
+        # Annotate each bar with its value using a white background for better contrast.
         for bar in bars:
             height = bar.get_height()
-            ax1.text(bar.get_x() + bar.get_width()/2, height + (0.02 * total_round_up_savings),
-                     f"${height:.2f}", ha="center", va="bottom", fontsize=12, fontweight="bold")
+            ax1.text(
+                bar.get_x() + bar.get_width()/2,
+                height + (0.02 * total_round_up_savings),
+                f"${height:.2f}",
+                ha="center",
+                va="bottom",
+                fontsize=12,
+                fontweight="bold",
+                bbox=dict(facecolor='white', edgecolor='none', pad=2)
+            )
         
         plt.tight_layout()
         st.pyplot(fig1, use_container_width=True)
@@ -121,10 +130,19 @@ with st.container():
         ax2.spines["right"].set_visible(False)
         ax2.yaxis.grid(True, linestyle="--", alpha=0.6)
         
+        # Annotate each bar with its projected value using a white background.
         for bar in bars:
             height = bar.get_height()
-            ax2.text(bar.get_x() + bar.get_width()/2, height + (0.02 * height),
-                     f"${height:,.2f}", ha="center", va="bottom", fontsize=12, fontweight="bold")
+            ax2.text(
+                bar.get_x() + bar.get_width()/2,
+                height + (0.02 * height),
+                f"${height:,.2f}",
+                ha="center",
+                va="bottom",
+                fontsize=12,
+                fontweight="bold",
+                bbox=dict(facecolor='white', edgecolor='none', pad=2)
+            )
         
         plt.tight_layout()
         st.pyplot(fig2, use_container_width=True)
