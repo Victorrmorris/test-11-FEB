@@ -35,8 +35,8 @@ st.title("🏦 Linked Checking Accounts & Savings")
 with st.container():
     st.subheader("💰 Checking Account Balances")
     checking_accounts = pd.DataFrame({
-        "Account": ["USAA Checking", "AMEX Savings", "Germany Checking", "Wise", "Greenlight (Kids)"],
-        "Balance ($)": [4500.13, 20348.05, 233.81, 198.76, 300.00]
+        "Account": ["USAA Checking", "Germany Checking", "Wise", "Greenlight (Kids)"],
+        "Balance ($)": [4500.13, 233.81, 198.76, 300.00]
     })
     st.table(checking_accounts)
 
