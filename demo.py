@@ -1,10 +1,13 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-import matplotlib.ticker as mtick
 
 # -------------------- Global Style -------------------- #
-plt.style.use('seaborn-whitegrid')  # Use a clean Seaborn style for all charts
+try:
+    plt.style.use("seaborn-whitegrid")  # Use a clean Seaborn style for all charts
+except OSError:
+    print("Style 'seaborn-whitegrid' not found. Falling back to default style.")
+    plt.style.use("default")
 
 # -------------------- Page Configuration -------------------- #
 st.set_page_config(page_title="DECC Automated Savings", layout="wide", initial_sidebar_state="expanded")
@@ -18,19 +21,16 @@ with st.sidebar:
     monthly_savings_goal = st.number_input("Set Your Monthly Savings Goal ($)", min_value=10, value=500, step=50)
 
 # Define multipliers for dummy data based on round-up method selection.
-# Base data (for "Nearest $1") represents total monthly round-up savings of $194.49.
 multipliers = {"Nearest $1": 1, "Nearest $5": 5, "Nearest $10": 10}
 multiplier = multipliers[round_up_type]
 
 # -------------------- Dummy Data for Round-Up Savings -------------------- #
-# Base simulated round-up savings per account (for $1 round-up)
 base_round_up = {
     "USAA Checking": 78.62,
     "Germany Checking": 32.19,
     "Wise": 59.12,
     "Greenlight": 24.56
 }
-# Apply the multiplier to simulate higher round-up savings
 round_up_savings = {account: round(amount * multiplier, 2) for account, amount in base_round_up.items()}
 total_round_up_savings = sum(round_up_savings.values())
 
@@ -54,31 +54,24 @@ with st.container():
         st.markdown("#### 🔄 Round-Up Savings by Checking Account")
         st.metric("Total Simulated Round-Up Savings (Monthly)", f"${total_round_up_savings:.2f}")
         
-        # Prepare DataFrame for plotting
         df_savings = pd.DataFrame(list(round_up_savings.items()), columns=["Account", "Round-Up Savings ($)"])
         
-        # Create figure and axis with improved resolution
         fig1, ax1 = plt.subplots(figsize=(8, 5), dpi=100)
         colors = ["#1E3A8A", "#4A90E2", "#72BF44", "#00C48C"]
         
         bars = ax1.bar(df_savings["Account"], df_savings["Round-Up Savings ($)"],
                        color=colors, edgecolor="black", linewidth=0.8)
         
-        # Set titles and labels with adjusted font sizes
         ax1.set_title("Round-Up Savings by Checking Account", fontsize=16, fontweight="bold")
         ax1.set_xlabel("Accounts", fontsize=14)
         ax1.set_ylabel("Savings ($)", fontsize=14)
         ax1.tick_params(axis='x', labelrotation=20, labelsize=12)
         ax1.tick_params(axis='y', labelsize=12)
         
-        # Remove the top and right spines for a cleaner look
         ax1.spines["top"].set_visible(False)
         ax1.spines["right"].set_visible(False)
-        
-        # Add gridlines only for the y-axis
         ax1.yaxis.grid(True, linestyle="--", alpha=0.6)
         
-        # Annotate each bar with its value
         for bar in bars:
             height = bar.get_height()
             ax1.text(bar.get_x() + bar.get_width()/2, height + (0.02 * total_round_up_savings),
@@ -90,14 +83,13 @@ with st.container():
     # --- Right Column: Projected Savings Growth Chart ---
     with col2:
         st.markdown("#### 📈 Projected Savings Growth")
-        # Parameters for the compound interest simulation:
+        
         initial_balance = 0
         monthly_contribution = total_round_up_savings
         annual_interest_rate = 0.038
         compounding_periods_per_year = 12
         years = 3
 
-        # Calculate future values with monthly compounding and contributions
         future_values = []
         balance = initial_balance
         for month in range(1, years * 12 + 1):
@@ -111,7 +103,6 @@ with st.container():
             "Projected Balance ($)": future_values
         })
 
-        # Create figure and axis with improved resolution
         fig2, ax2 = plt.subplots(figsize=(8, 5), dpi=100)
         bar_color = "#4A90E2"
         bars = ax2.bar(df_growth["Year"], df_growth["Projected Balance ($)"],
@@ -124,14 +115,10 @@ with st.container():
         ax2.tick_params(axis='x', labelsize=12)
         ax2.tick_params(axis='y', labelsize=12)
         
-        # Remove top and right spines for a modern look
         ax2.spines["top"].set_visible(False)
         ax2.spines["right"].set_visible(False)
-        
-        # Add gridlines for y-axis
         ax2.yaxis.grid(True, linestyle="--", alpha=0.6)
         
-        # Annotate each bar with its projected value
         for bar in bars:
             height = bar.get_height()
             ax2.text(bar.get_x() + bar.get_width()/2, height + (0.02 * height),
