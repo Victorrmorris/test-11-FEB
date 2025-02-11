@@ -38,11 +38,16 @@ total_round_up_savings = sum(round_up_savings.values())
 st.title("🏦 Linked Checking Accounts & Savings")
 with st.container():
     st.subheader("💰 Checking Account Balances")
-    checking_accounts = pd.DataFrame({
-        "Account": ["USAA Checking", "Germany Checking", "Wise", "Greenlight (Kids)"],
-        "Balance ($)": [4500.13, 233.81, 198.76, 300.00]
-    })
-    st.table(checking_accounts)
+    # Instead of a table, display each account as a metric card for a modern look.
+    checking_accounts = {
+        "USAA Checking": 4500.13,
+        "Germany Checking": 233.81,
+        "Wise": 198.76,
+        "Greenlight (Kids)": 300.00
+    }
+    cols = st.columns(len(checking_accounts))
+    for col, (account, balance) in zip(cols, checking_accounts.items()):
+        col.metric(label=account, value=f"${balance:,.2f}")
 
 # -------------------- Savings Visualizations -------------------- #
 with st.container():
@@ -72,7 +77,7 @@ with st.container():
         ax1.spines["right"].set_visible(False)
         ax1.yaxis.grid(True, linestyle="--", alpha=0.6)
         
-        # Annotate each bar with its value using a white background for better contrast, smaller font size.
+        # Annotate each bar with its value using a white background for contrast, with smaller font.
         for bar in bars:
             height = bar.get_height()
             ax1.text(
@@ -100,7 +105,7 @@ with st.container():
         compounding_periods_per_year = 12
         years = 3
 
-        # Calculate future values with monthly compounding and contributions
+        # Calculate future values with monthly compounding and contributions.
         future_values = []
         balance = initial_balance
         for month in range(1, years * 12 + 1):
