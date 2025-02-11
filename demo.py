@@ -84,12 +84,14 @@ with st.container():
     with col2:
         st.markdown("#### 📈 Projected Savings Growth")
         
+        # Parameters for the compound interest simulation:
         initial_balance = 0
         monthly_contribution = total_round_up_savings
-        annual_interest_rate = 0.038
+        annual_interest_rate = 0.038  # Annual rate of 3.80%
         compounding_periods_per_year = 12
         years = 3
 
+        # Calculate future values with monthly compounding and contributions
         future_values = []
         balance = initial_balance
         for month in range(1, years * 12 + 1):
@@ -126,6 +128,9 @@ with st.container():
         
         plt.tight_layout()
         st.pyplot(fig2, use_container_width=True)
+        
+        # Add a note below the chart describing the growth assumptions.
+        st.caption("Note: The projected savings are calculated assuming monthly contributions, compounded monthly at an annual interest rate of 3.80% over 3 years.")
 
 # -------------------- AI-Driven Savings Insights -------------------- #
 with st.container():
