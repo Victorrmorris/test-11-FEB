@@ -13,8 +13,8 @@ with st.sidebar:
     # User sets the desired monthly savings goal
     monthly_savings_goal = st.number_input("Set Your Monthly Savings Goal ($)", min_value=10, value=500, step=50)
 
-# Define multipliers for dummy data based on round-up method selection.
-# Base data (for "Nearest $1") represents total monthly round-up savings of $194.49.
+# Define multipliers for dummy data based on the round-up method.
+# Base dummy data (for "Nearest $1") represents a total monthly round-up savings of ~$194.49.
 multipliers = {"Nearest $1": 1, "Nearest $5": 5, "Nearest $10": 10}
 multiplier = multipliers[round_up_type]
 
@@ -49,23 +49,31 @@ with st.container():
     with col1:
         st.markdown("#### 🔄 Round-Up Savings by Checking Account")
         st.metric("Total Simulated Round-Up Savings (Monthly)", f"${total_round_up_savings:.2f}")
-        
-        # Prepare DataFrame for plotting
+
+        # Prepare data for plotting
         df_savings = pd.DataFrame(list(round_up_savings.items()), columns=["Account", "Round-Up Savings ($)"])
-        fig1, ax1 = plt.subplots(figsize=(7, 4))
+        
+        # Use Seaborn style for a clean look
+        plt.style.use('seaborn-whitegrid')
+        fig1, ax1 = plt.subplots(figsize=(8, 5))
         colors = ["#1E3A8A", "#4A90E2", "#72BF44", "#00C48C"]
         bars = ax1.bar(df_savings["Account"], df_savings["Round-Up Savings ($)"],
                        color=colors, edgecolor="black")
-        ax1.set_title("Round-Up Savings by Checking Account", fontsize=14, fontweight="bold")
-        ax1.set_xlabel("Accounts", fontsize=12)
-        ax1.set_ylabel("Savings ($)", fontsize=12)
-        plt.xticks(rotation=20)
-        ax1.grid(axis="y", linestyle="--", alpha=0.5)
-        # Annotate each bar with its value
+        
+        ax1.set_title("Round-Up Savings by Checking Account", fontsize=16, fontweight="bold")
+        ax1.set_xlabel("Accounts", fontsize=14)
+        ax1.set_ylabel("Savings ($)", fontsize=14)
+        ax1.tick_params(axis='x', labelsize=12, rotation=45)
+        ax1.tick_params(axis='y', labelsize=12)
+        
+        # Calculate an offset for the bar labels (2% of max value)
+        offset = df_savings["Round-Up Savings ($)"].max() * 0.02
         for bar in bars:
             height = bar.get_height()
-            ax1.text(bar.get_x() + bar.get_width()/2, height + 2,
-                     f"${height:.2f}", ha="center", fontsize=12, fontweight="bold")
+            ax1.text(bar.get_x() + bar.get_width()/2, height + offset,
+                     f"${height:.2f}", ha="center", fontsize=12, fontweight="bold", color='black')
+        
+        fig1.tight_layout()
         st.pyplot(fig1)
 
     # --- Right Column: Projected Savings Growth Chart ---
@@ -96,20 +104,26 @@ with st.container():
             "Projected Balance ($)": future_values
         })
 
-        fig2, ax2 = plt.subplots(figsize=(7, 4))
+        plt.style.use('seaborn-whitegrid')
+        fig2, ax2 = plt.subplots(figsize=(8, 5))
         bars = ax2.bar(df_growth["Year"], df_growth["Projected Balance ($)"],
                        color="#4A90E2", edgecolor="black")
-        ax2.set_title("Projected Savings Growth Over Time", fontsize=14, fontweight="bold")
-        ax2.set_xlabel("Years", fontsize=12)
-        ax2.set_ylabel("Total Savings ($)", fontsize=12)
-        ax2.set_xticks(list(range(1, years + 1)))
-        ax2.grid(axis="y", linestyle="--", alpha=0.5)
-        # Annotate each bar with its projected value
+        
+        ax2.set_title("Projected Savings Growth Over Time", fontsize=16, fontweight="bold")
+        ax2.set_xlabel("Years", fontsize=14)
+        ax2.set_ylabel("Total Savings ($)", fontsize=14)
+        ax2.tick_params(axis='x', labelsize=12)
+        ax2.tick_params(axis='y', labelsize=12)
+        ax2.set_xticks(df_growth["Year"])
+        
+        # Calculate an offset for the bar labels (2% of max projected balance)
+        offset_growth = df_growth["Projected Balance ($)"].max() * 0.02
         for bar in bars:
             height = bar.get_height()
-            ax2.text(bar.get_x() + bar.get_width()/2, height + 500,
-                     f"${height:,.2f}", ha="center", fontsize=12, fontweight="bold")
-        plt.tight_layout()
+            ax2.text(bar.get_x() + bar.get_width()/2, height + offset_growth,
+                     f"${height:,.2f}", ha="center", fontsize=12, fontweight="bold", color='black')
+        
+        fig2.tight_layout()
         st.pyplot(fig2)
 
 # -------------------- AI-Driven Savings Insights -------------------- #
