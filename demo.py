@@ -69,7 +69,9 @@ years = 3  # 3-year projection
 
 # Calculate savings growth
 future_values = []
+years_list = list(range(1, years + 1))
 balance = initial_balance
+
 for month in range(1, years * 12 + 1):
     balance += monthly_contribution  # Add round-up savings
     balance *= (1 + annual_interest_rate / compounding_periods_per_year)  # Apply monthly interest
@@ -77,16 +79,26 @@ for month in range(1, years * 12 + 1):
         future_values.append(balance)
 
 # Create a dataframe for visualization
-df_growth = pd.DataFrame({"Year": range(1, years + 1), "Projected Balance ($)": future_values})
+df_growth_bar = pd.DataFrame({"Year": years_list, "Projected Balance ($)": future_values})
 
-# Plot savings growth over time
+# Plot bar chart instead of a line chart
 fig, ax = plt.subplots(figsize=(7, 4))
-ax.plot(df_growth["Year"], df_growth["Projected Balance ($)"], marker="o", linestyle="-", color="#4A90E2")
+ax.bar(df_growth_bar["Year"], df_growth_bar["Projected Balance ($)"], color="#4A90E2", edgecolor="black")
+
+# Set labels and title
 ax.set_title("Projected Savings Growth Over Time", fontsize=14, fontweight="bold")
 ax.set_xlabel("Years", fontsize=12)
 ax.set_ylabel("Total Savings ($)", fontsize=12)
-ax.grid(True, linestyle="--", alpha=0.5)
 
+# Add value labels on top of bars
+for i, v in enumerate(future_values):
+    ax.text(years_list[i], v + 500, f"${v:,.2f}", ha="center", fontsize=12, fontweight="bold")
+
+plt.grid(axis="y", linestyle="--", alpha=0.5)
+plt.xticks(years_list)
+plt.tight_layout()
+
+# Display the bar chart in Streamlit
 st.pyplot(fig)
 
 # -------------------- AI-Driven Savings Insights -------------------- #
