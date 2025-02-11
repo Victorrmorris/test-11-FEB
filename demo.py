@@ -171,9 +171,9 @@ with st.container():
 with st.container():
     st.subheader("🔄 Automatic Savings Transfer")
     if total_round_up_savings > 150:
-        st.success(f"Your monthly round-savings of **${total_round_up_savings:.2f}** exceed the $150 threshold. These funds have been automatically transferred to your linked high yield savings account.")
+        st.success(f"Your monthly round-savings of ${total_round_up_savings:.2f} exceed the $150 threshold. These funds have been automatically transferred to your linked high yield savings account.")
     else:
-        st.info(f"Your monthly round-savings of **${total_round_up_savings:.2f}** are below the $150 threshold. Increase your round-savings to enable an automatic transfer to your high yield savings account.")
+        st.info(f"Your monthly round-savings of ${total_round_up_savings:.2f} are below the $150 threshold. Increase your round-savings to enable an automatic transfer to your high yield savings account.")
 
 # -------------------- LLM Chatbot Prompt -------------------- #
 with st.container():
