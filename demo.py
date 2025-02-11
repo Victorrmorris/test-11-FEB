@@ -59,8 +59,8 @@ with st.container():
         fig1, ax1 = plt.subplots(figsize=(8, 5), dpi=100)
         colors = ["#1E3A8A", "#4A90E2", "#72BF44", "#00C48C"]
         
-        ax1.bar(df_savings["Account"], df_savings["Round-Up Savings ($)"],
-                color=colors, edgecolor="black", linewidth=0.8)
+        bars = ax1.bar(df_savings["Account"], df_savings["Round-Up Savings ($)"],
+                       color=colors, edgecolor="black", linewidth=0.8)
         
         ax1.set_title("Round-Up Savings by Checking Account", fontsize=16, fontweight="bold")
         ax1.set_xlabel("Accounts", fontsize=14)
@@ -71,6 +71,20 @@ with st.container():
         ax1.spines["top"].set_visible(False)
         ax1.spines["right"].set_visible(False)
         ax1.yaxis.grid(True, linestyle="--", alpha=0.6)
+        
+        # Annotate each bar with its value using a white background for better contrast, smaller font size.
+        for bar in bars:
+            height = bar.get_height()
+            ax1.text(
+                bar.get_x() + bar.get_width()/2,
+                height + (0.02 * total_round_up_savings),
+                f"${height:.2f}",
+                ha="center",
+                va="bottom",
+                fontsize=10,  # Smaller font size
+                fontweight="bold",
+                bbox=dict(facecolor='white', edgecolor='none', pad=2)
+            )
         
         plt.tight_layout()
         st.pyplot(fig1, use_container_width=True)
@@ -102,8 +116,8 @@ with st.container():
 
         fig2, ax2 = plt.subplots(figsize=(8, 5), dpi=100)
         bar_color = "#4A90E2"
-        ax2.bar(df_growth["Year"], df_growth["Projected Balance ($)"],
-                color=bar_color, edgecolor="black", linewidth=0.8)
+        bars = ax2.bar(df_growth["Year"], df_growth["Projected Balance ($)"],
+                       color=bar_color, edgecolor="black", linewidth=0.8)
         
         ax2.set_title("Projected Savings Growth Over Time", fontsize=16, fontweight="bold")
         ax2.set_xlabel("Years", fontsize=14)
@@ -115,6 +129,20 @@ with st.container():
         ax2.spines["top"].set_visible(False)
         ax2.spines["right"].set_visible(False)
         ax2.yaxis.grid(True, linestyle="--", alpha=0.6)
+        
+        # Annotate each bar with its projected value using a white background and smaller font.
+        for bar in bars:
+            height = bar.get_height()
+            ax2.text(
+                bar.get_x() + bar.get_width()/2,
+                height + (0.02 * height),
+                f"${height:,.2f}",
+                ha="center",
+                va="bottom",
+                fontsize=10,  # Smaller font size
+                fontweight="bold",
+                bbox=dict(facecolor='white', edgecolor='none', pad=2)
+            )
         
         plt.tight_layout()
         st.pyplot(fig2, use_container_width=True)
