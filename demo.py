@@ -35,7 +35,7 @@ round_up_savings = {account: round(amount * multiplier, 2) for account, amount i
 total_round_up_savings = sum(round_up_savings.values())
 
 # -------------------- Main Title and Checking Accounts -------------------- #
-st.title("🏦 Linked Checking Accounts")
+st.title("🏦 Linked Checking Accounts & Savings")
 with st.container():
     st.subheader("💰 Checking Account Balances")
     # Display each checking account as a metric card for a modern look.
@@ -167,9 +167,17 @@ with st.container():
         st.warning(f"⚠️ You need to save **${additional_needed:.2f}** more per month with the **{safe_round_up_type}** method to reach your goal.")
     st.info("💡 Tip: Experiment with different round-up methods to see how they impact your projected savings growth.")
 
+# -------------------- Automatic Savings Transfer -------------------- #
+with st.container():
+    st.subheader("🔄 Automatic Savings Transfer")
+    if total_round_up_savings > 150:
+        st.success(f"Your monthly round-savings of ${total_round_up_savings:.2f} exceed the $150 threshold. These funds have been automatically transferred to your linked high yield savings account.")
+    else:
+        st.info(f"Your monthly round-savings of ${total_round_up_savings:.2f} are below the $150 threshold. Increase your round-savings to enable an automatic transfer to your high yield savings account.")
+
 # -------------------- LLM Chatbot Prompt -------------------- #
 with st.container():
-    st.subheader("💬 Chat with our AI")
+    st.subheader("💬 Chat with our LLM")
     chat_prompt = st.text_input("Enter your question or prompt below:")
     if st.button("Submit", key="chat_submit"):
         # Placeholder response – integrate your LLM API here as needed.
