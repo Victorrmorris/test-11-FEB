@@ -131,11 +131,12 @@ with st.container():
 with st.container():
     st.subheader("🤖 AI Savings Insights")
     annual_savings = total_round_up_savings * 12
+    safe_round_up_type = round_up_type.replace("$", "\\$")
     if total_round_up_savings >= monthly_savings_goal:
-        st.success(f"🚀 Great job! With the **{round_up_type}** method, you're projected to save **${annual_savings:,.2f}** annually.")
+        st.success(f"🚀 Great job! With the **{safe_round_up_type}** method, you're projected to save **${annual_savings:,.2f}** annually.")
     else:
         additional_needed = monthly_savings_goal - total_round_up_savings
-        st.warning(f"⚠️ You need to save **${additional_needed:.2f}** more per month with the **{round_up_type}** method to reach your goal.")
+        st.warning(f"⚠️ You need to save **${additional_needed:.2f}** more per month with the **{safe_round_up_type}** method to reach your goal.")
     st.info("💡 Tip: Experiment with different round-up methods to see how they impact your projected savings growth.")
 
 # -------------------- Footer -------------------- #
